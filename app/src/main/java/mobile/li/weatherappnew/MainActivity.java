@@ -295,8 +295,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        WeatherForecastElement today = lists.get(0);
+        Date todayDt = new Date(today.getDt() * 1000L);
+        int todaytime  = Integer.valueOf(new SimpleDateFormat("HH").format(todayDt));
         int startday = DateQueue.pollFirst();
-        if(startday > 14){
+        if(todaytime > 14){
             startday = DateQueue.pollFirst();
         }
 
