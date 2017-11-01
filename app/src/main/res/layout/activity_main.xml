@@ -36,7 +36,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFFFF"
         android:textSize="70sp"
-        tools:text="Sun" />
+        tools:text="Desp" />
 
     <TextView
         android:id="@+id/current_temperature_field"
@@ -65,110 +65,189 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/current_temperature_field"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linear_layout_1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/now"
+                    android:id="@+id/now_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now"
-                    android:textAlignment="viewStart" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+3H" />
 
                 <TextView
-                    android:id="@+id/now_weather"
+                    android:id="@+id/now_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n" />
+
+                <TextView
+                    android:id="@+id/now_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_wea" />
 
                 <TextView
                     android:id="@+id/now_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_temp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/now_3_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_3" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+6H" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/now_3_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n3" />
+
+                <TextView
+                    android:id="@+id/now_3_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_3_wea" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/now_3_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_3_temp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/now_6_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_6" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+9H" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/now_6_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n6" />
+
+                <TextView
+                    android:id="@+id/now_6_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_6_wea" />
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/now_6_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_6_temp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/now_9_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_9" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+12H" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/now_9_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n9" />
+
+                <TextView
+                    android:id="@+id/now_9_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_9_wea" />
 
                 <TextView
-                    android:id="@+id/textView12"
+                    android:id="@+id/now_9_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_9_temp" />
             </LinearLayout>
 
@@ -176,105 +255,185 @@
 
         <LinearLayout
             android:id="@+id/linear_layout_2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linear_layout_1"
             android:orientation="horizontal"
             android:layout_marginTop="12dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/now_12_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_12" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+15H" />
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/now_12_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n12" />
+
+                <TextView
+                    android:id="@+id/now_12_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_12_wea" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/now_12_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_12_temp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView49"
+                    android:id="@+id/now_15_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_15" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+18H" />
 
                 <TextView
-                    android:id="@+id/textView48"
+                    android:id="@+id/now_15_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n15" />
+
+                <TextView
+                    android:id="@+id/now_15_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_15_wea" />
 
                 <TextView
-                    android:id="@+id/textView50"
+                    android:id="@+id/now_15_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_15_temp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView57"
+                    android:id="@+id/now_18_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_18" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+21H" />
 
                 <TextView
-                    android:id="@+id/textView58"
+                    android:id="@+id/now_18_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n18" />
+
+                <TextView
+                    android:id="@+id/now_18_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_18_wea" />
 
                 <TextView
-                    android:id="@+id/textView56"
+                    android:id="@+id/now_18_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_18_temp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/textView60"
+                    android:id="@+id/now_21_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="now_21" />
+                    android:textColor="#ceffff"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    android:text="+24H" />
 
                 <TextView
-                    android:id="@+id/textView61"
+                    android:id="@+id/now_21_icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="32sp"
+                    android:textAlignment="center"
+                    android:text="n21" />
+
+                <TextView
+                    android:id="@+id/now_21_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_21_wea" />
 
                 <TextView
-                    android:id="@+id/textView59"
+                    android:id="@+id/now_21_temp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textAlignment="center"
                     android:text="now_21_temp" />
             </LinearLayout>
         </LinearLayout>
@@ -286,95 +445,226 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/linear_layout_hour"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="16dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView69"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="day_1" />
-
-            <TextView
-                android:id="@+id/textView68"
+                android:id="@+id/day_1_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#ceffff"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="Today" />
+
+            <TextView
+                android:id="@+id/day_1_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textAlignment="center"
+                android:text="d1" />
+
+            <TextView
+                android:id="@+id/day_1_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day1_wea" />
+
+            <TextView
+                android:id="@+id/day_1_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="day1_temp" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView71"
+                android:id="@+id/day_2_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#ceffff"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="Tomorrow" />
+
+            <TextView
+                android:id="@+id/day_2_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textAlignment="center"
+                android:text="d2" />
+
+            <TextView
+                android:id="@+id/day_2_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day_2" />
 
             <TextView
-                android:id="@+id/textView70"
+                android:id="@+id/day_2_temp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day_2_wea" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView73"
+                android:id="@+id/day_3_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="day_3" />
+                android:textColor="#ceffff"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="2 Day After" />
 
             <TextView
-                android:id="@+id/textView72"
+                android:id="@+id/day_3_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textAlignment="center"
+                android:text="d3" />
+
+            <TextView
+                android:id="@+id/day_3_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="day_2" />
+
+            <TextView
+                android:id="@+id/day_3_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day_3_wea" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView75"
+                android:id="@+id/day_4_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="day_4" />
+                android:textColor="#ceffff"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="3 Day After" />
 
             <TextView
-                android:id="@+id/textView74"
+                android:id="@+id/day_4_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textAlignment="center"
+                android:text="d4" />
+
+            <TextView
+                android:id="@+id/day_4_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="day_2" />
+
+            <TextView
+                android:id="@+id/day_4_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day_4_wea" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView77"
+                android:id="@+id/day_5_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="day_5" />
+                android:textColor="#ceffff"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="4 Day After" />
 
             <TextView
-                android:id="@+id/textView76"
+                android:id="@+id/day_5_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textAlignment="center"
+                android:text="d5" />
+
+            <TextView
+                android:id="@+id/day_5_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
+                android:text="day_2" />
+
+            <TextView
+                android:id="@+id/day_5_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textAlignment="center"
                 android:text="day_5_wea" />
         </LinearLayout>
     </LinearLayout>

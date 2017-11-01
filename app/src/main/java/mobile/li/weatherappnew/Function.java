@@ -24,16 +24,45 @@ public class Function {
 
     private static final String OPEN_WEATHER_MAP_API = "3a3b335b2f571f559d800d785915a563";
 
-    public static String setWeatherIcon(int actualId, long sunrise, long sunset){
+    public static String setWeatherIcon(int actualId, long sunrise, long sunset, long rtime){
         int id = actualId / 100;
         String icon = "";
+        Date sunriseF = new Date(sunrise);
+        Date sunsetF = new Date(sunset);
+        Date rtimeF = new Date(rtime);
         if(actualId == 800){
-            long currentTime = new Date().getTime();
-            if(currentTime>=sunrise && currentTime<sunset) {
+            //long currentTime = new Date().getTime();
+            long currentTime = rtime;
+            //if(currentTime>=sunrise && currentTime<sunset) {
+            if(rtimeF.getHours() > sunriseF.getHours() && rtimeF.getHours() < sunsetF.getHours()){
                 icon = "&#xf00d;";
             } else {
                 icon = "&#xf02e;";
             }
+        } else {
+            switch(id) {
+                case 2 : icon = "&#xf01e;";
+                    break;
+                case 3 : icon = "&#xf01c;";
+                    break;
+                case 7 : icon = "&#xf014;";
+                    break;
+                case 8 : icon = "&#xf013;";
+                    break;
+                case 6 : icon = "&#xf01b;";
+                    break;
+                case 5 : icon = "&#xf019;";
+                    break;
+            }
+        }
+        return icon;
+    }
+
+    public static String setWeatherIcon2(int actualId){
+        int id = actualId / 100;
+        String icon = "";
+        if(actualId == 800){
+            icon = "&#xf00d;";
         } else {
             switch(id) {
                 case 2 : icon = "&#xf01e;";
@@ -88,7 +117,6 @@ public class Function {
                     JSONObject main = json.getJSONObject("main");
                     DateFormat df = DateFormat.getDateTimeInstance();
 
-
                     String city = json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country");
                     String description = details.getString("description").toUpperCase(Locale.US);
                     String temperature = String.valueOf((int)main.getDouble("temp")) + "°";
@@ -97,7 +125,8 @@ public class Function {
                     String updatedOn = df.format(new Date(json.getLong("dt")*1000));
                     String iconText = setWeatherIcon(details.getInt("id"),
                             json.getJSONObject("sys").getLong("sunrise") * 1000,
-                            json.getJSONObject("sys").getLong("sunset") * 1000);
+                            json.getJSONObject("sys").getLong("sunset") * 1000,
+                            new Date().getTime());
 
                     delegate.processFinish(city, description, temperature, humidity, pressure, updatedOn, iconText, ""+ (json.getJSONObject("sys").getLong("sunrise") * 1000));
 
