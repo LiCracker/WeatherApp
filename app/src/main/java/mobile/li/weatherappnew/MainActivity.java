@@ -1,7 +1,15 @@
 package mobile.li.weatherappnew;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -27,7 +35,8 @@ import az.openweatherapi.model.gson.five_day.ExtendedWeather;
 import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity{
 
     private static final String TAG = "MainActivity";
 
@@ -36,8 +45,11 @@ public class MainActivity extends AppCompatActivity {
     long sunrise;
     long sunset;
 
-    Calendar calendar = Calendar.getInstance();
-    int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+    private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
+
+    private LocationManager locationManager;
+    private String provider;
+    private static Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         //pressure_field = (TextView)findViewById(R.id.pressure_field);
         weatherIcon = (TextView)findViewById(R.id.weather_icon);
         weatherIcon.setTypeface(weatherFont);
-
 
 //        Function.placeIdTask asyncTask =new Function.placeIdTask(new Function.AsyncResponse() {
 //            public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn, String weather_iconText, String sun_rise) {
@@ -75,9 +86,51 @@ public class MainActivity extends AppCompatActivity {
         OWService mOWService = new OWService("3a3b335b2f571f559d800d785915a563");
         mOWService.setMetricUnits(OWSupportedUnits.METRIC);
 
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+
+        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  }, 1);
+        }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        List<String> list = locationManager.getProviders(true);
+
+        if (list.contains(LocationManager.GPS_PROVIDER)) {
+            provider = LocationManager.GPS_PROVIDER;
+        }
+        else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+            provider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            Toast.makeText(this, "Please enable the Internet or/and GPS from system settings", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        double currLatitude = 0;
+        double currLongitude = 0;
+
+        location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            currLatitude = location.getLatitude();
+            Log.v(TAG, "Current Latitude: " + String.valueOf(currLatitude));
+            currLongitude = location.getLongitude();
+            Log.v(TAG, "Current Longitude: " + String.valueOf(currLongitude));
+        }
+
+        locationManager.requestLocationUpdates(provider, 2000, 2, locationListener);
+
         Coord coordinate = new Coord();
-        coordinate.setLat(37.338981);
-        coordinate.setLon(-121.886087);
+        if(location == null){
+            Toast.makeText(this, "Get User Location Error. Use Default Location", Toast.LENGTH_LONG).show();
+            coordinate.setLat(37.338981);
+            coordinate.setLon(-121.886087);
+        }else{
+            coordinate.setLat(currLatitude);
+            coordinate.setLon(currLongitude);
+        }
 
         mOWService.getCurrentDayForecast(coordinate, new OWRequestListener<CurrentWeather>() {
             @Override
@@ -91,7 +144,15 @@ public class MainActivity extends AppCompatActivity {
                 sunset = (long)currentWeather.getSys().getSunset() * 1000;
 
                 long responsetime = (long)currentWeather.getDt() * 1000;
-                cityField.setText(currentWeather.getName());
+                StringBuilder cityText = new StringBuilder();
+                if(location == null){
+                    cityText.append("[Default] ");
+                }else{
+                    cityText.append("➹ ");
+                }
+                cityText.append(currentWeather.getName() + ", " +currentWeather.getSys().getCountry());
+
+                cityField.setText(cityText.toString());
                 az.openweatherapi.model.gson.current_day.Weather currentDetail = currentWeather.getWeather().get(0);
                 detailsField.setText(currentDetail.getDescription());
                 currentTemperatureField.setText(String.valueOf(currentWeather.getMain().getTemp().intValue()) + "°");
@@ -125,6 +186,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+        }
+
+        @Override
+        public void onProviderEnabled(String arg0) {
+        }
+
+        @Override
+        public void onProviderDisabled(String arg0) {
+        }
+
+        @Override
+        public void onLocationChanged(Location arg0) {
+//            Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+//            String longitude = "Longitude: " + location.getLongitude();
+//            Log.v(TAG, longitude);
+//            String latitude = "Latitude: " + location.getLatitude();
+//            Log.v(TAG, latitude);
+        }
+    };
 
     private void updateItems(List<WeatherForecastElement> lists){
         weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
