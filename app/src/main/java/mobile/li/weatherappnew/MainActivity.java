@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity{
 
     private static final String TAG = "MainActivity";
 
-    TextView cityField, detailsField, currentTemperatureField, humidity_field, pressure_field, weatherIcon, updatedField;
+    TextView cityField, detailsField, currentTemperatureField, weatherIcon, updatedField;
     Typeface weatherFont;
     long sunrise;
     long sunset;
@@ -57,16 +57,7 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
-
-        cityField = (TextView)findViewById(R.id.city_field);
-        updatedField = (TextView)findViewById(R.id.updated_field);
-        detailsField = (TextView)findViewById(R.id.details_field);
-        currentTemperatureField = (TextView)findViewById(R.id.current_temperature_field);
-        //humidity_field = (TextView)findViewById(R.id.humidity_field);
-        //pressure_field = (TextView)findViewById(R.id.pressure_field);
-        weatherIcon = (TextView)findViewById(R.id.weather_icon);
-        weatherIcon.setTypeface(weatherFont);
+        loadWeather();
 
 //        Function.placeIdTask asyncTask =new Function.placeIdTask(new Function.AsyncResponse() {
 //            public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn, String weather_iconText, String sun_rise) {
@@ -82,6 +73,47 @@ public class MainActivity extends AppCompatActivity{
 //            }
 //        });
 //        asyncTask.execute("37.338981", "-121.886087"); //  asyncTask.execute("Latitude", "Longitude")
+    }
+
+    LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+        }
+
+        @Override
+        public void onProviderEnabled(String arg0) {
+        }
+
+        @Override
+        public void onProviderDisabled(String arg0) {
+        }
+
+        @Override
+        public void onLocationChanged(Location arg0) {
+            location = arg0;
+            if(location != null){
+                String logChangeLat = String.format("%.2f", location.getLatitude());
+                String logChangeLon = String.format("%.2f", location.getLongitude());
+                Toast.makeText(getBaseContext(), "[Location Updated] Lat: " + logChangeLat + " Lon: " + logChangeLon, Toast.LENGTH_SHORT).show();
+                Log.v(TAG, "Latitude Changed: " + logChangeLat);
+                Log.v(TAG, "Longitude Changed: " + logChangeLon);
+            }else{
+                Toast.makeText(getBaseContext(), "Please check your Internet and GPS settings.", Toast.LENGTH_LONG).show();
+            }
+            loadWeather();
+        }
+    };
+
+    private void loadWeather(){
+        weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
+
+        cityField = (TextView)findViewById(R.id.city_field);
+        updatedField = (TextView)findViewById(R.id.updated_field);
+        detailsField = (TextView)findViewById(R.id.details_field);
+        currentTemperatureField = (TextView)findViewById(R.id.current_temperature_field);
+        weatherIcon = (TextView)findViewById(R.id.weather_icon);
+        weatherIcon.setTypeface(weatherFont);
 
         OWService mOWService = new OWService("3a3b335b2f571f559d800d785915a563");
         mOWService.setMetricUnits(OWSupportedUnits.METRIC);
@@ -105,7 +137,7 @@ public class MainActivity extends AppCompatActivity{
         else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
             provider = LocationManager.NETWORK_PROVIDER;
         } else {
-            Toast.makeText(this, "Please enable the Internet or/and GPS from system settings", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please check your Internet and GPS settings.", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -186,30 +218,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
-
-    LocationListener locationListener = new LocationListener() {
-
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-        }
-
-        @Override
-        public void onProviderEnabled(String arg0) {
-        }
-
-        @Override
-        public void onProviderDisabled(String arg0) {
-        }
-
-        @Override
-        public void onLocationChanged(Location arg0) {
-//            Toast.makeText(getBaseContext(), "Location changed: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-//            String longitude = "Longitude: " + location.getLongitude();
-//            Log.v(TAG, longitude);
-//            String latitude = "Latitude: " + location.getLatitude();
-//            Log.v(TAG, latitude);
-        }
-    };
 
     private void updateItems(List<WeatherForecastElement> lists){
         weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
