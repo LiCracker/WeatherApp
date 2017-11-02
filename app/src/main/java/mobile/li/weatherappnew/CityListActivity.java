@@ -71,7 +71,7 @@ public class CityListActivity extends AppCompatActivity {
         cityLayout.removeAllViews();
         for(CityInfo c: cities){
             View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
-            ((Button) cityView.findViewById(R.id.city_item)).setText(c.name);
+            ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code);
             cityLayout.addView(cityView);
         }
 
