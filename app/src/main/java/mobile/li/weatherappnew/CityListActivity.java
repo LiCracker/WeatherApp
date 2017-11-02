@@ -20,6 +20,8 @@ import java.util.List;
 import mobile.li.weatherappnew.model.CityInfo;
 import mobile.li.weatherappnew.util.ModelUtils;
 
+import static mobile.li.weatherappnew.CityAdderActivity.KEY_CITY;
+
 public class CityListActivity extends AppCompatActivity {
 
     private static final int REQ_CODE_CITY_ADDER = 100;
@@ -39,16 +41,18 @@ public class CityListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQ_CODE_CITY_ADDER){
-            List<String> info = Arrays.asList(data.getStringExtra("city").split(","));
+            List<String> info = Arrays.asList(data.getStringExtra(KEY_CITY).split(","));
 
             CityInfo newCity = new CityInfo();
             newCity.name = info.get(0);
             newCity.code = info.get(1);
-            cities.add(newCity);
 
+            updateCity(newCity);
             ModelUtils.save(this, MODEL_CITY_INFO, cities);
             setupCityUI();
-        }
+            }
+
+
     }
 
     private void setupUI() {
@@ -82,5 +86,19 @@ public class CityListActivity extends AppCompatActivity {
                 MODEL_CITY_INFO,
                 new TypeToken<List<CityInfo>>(){});
         cities = saveCityInfo == null ? new ArrayList<CityInfo>() : saveCityInfo;
+    }
+
+    private void updateCity(CityInfo cityInfo) {
+        boolean check = true;
+        for (CityInfo c : cities) {
+            if (c.equals(cityInfo)) {
+                check = false;
+                break;
+            }
+        }
+
+        if (check) {
+            cities.add(cityInfo);
+        }
     }
 }
