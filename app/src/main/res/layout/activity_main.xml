@@ -53,12 +53,11 @@
         android:id="@+id/details_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/weather_icon"
-        android:layout_alignStart="@+id/weather_icon"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/weather_icon"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#FFFFFF"
-        tools:text="sunny" />
+        tools:text="clear sky" />
 
     <LinearLayout
         android:id="@+id/linear_layout_hour"

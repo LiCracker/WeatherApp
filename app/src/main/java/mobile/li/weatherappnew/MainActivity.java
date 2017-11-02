@@ -8,19 +8,14 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import az.openweatherapi.OWService;
 import az.openweatherapi.listener.OWRequestListener;
@@ -29,8 +24,6 @@ import az.openweatherapi.model.gson.common.Coord;
 import az.openweatherapi.model.gson.common.Weather;
 import az.openweatherapi.model.gson.current_day.CurrentWeather;
 import az.openweatherapi.model.gson.five_day.ExtendedWeather;
-import az.openweatherapi.model.gson.five_day.Sys;
-import az.openweatherapi.model.gson.five_day.Sys_;
 import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
 
@@ -90,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(OWResponse<CurrentWeather> response) {
                 CurrentWeather currentWeather = response.body();
-                //Do something with the object here!
+
                 String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                 updatedField.setText("Last Updated : " + currentDateTimeString);
 
@@ -113,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-                //Log.e(TAG, "Current Day Forecast request failed: " + t.getMessage());
+                Log.e(TAG, "Current Day Forecast request failed: " + t.getMessage());
             }
         });
 
@@ -121,14 +114,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(OWResponse<ExtendedWeather> response) {
                 ExtendedWeather extendedWeather = response.body();
-                //Do something with the object here!
+
                 List<WeatherForecastElement> lists = extendedWeather.getList();
                 updateItems(lists);
             }
 
             @Override
             public void onFailure(Throwable t) {
-                //Log.e(TAG, "Five Day Forecast request failed: " + t.getMessage());
+                Log.e(TAG, "Five Day Forecast request failed: " + t.getMessage());
             }
         });
     }
@@ -297,9 +290,9 @@ public class MainActivity extends AppCompatActivity {
 
         WeatherForecastElement today = lists.get(0);
         Date todayDt = new Date(today.getDt() * 1000L);
-        int todaytime  = Integer.valueOf(new SimpleDateFormat("HH").format(todayDt));
+        int today_time  = Integer.valueOf(new SimpleDateFormat("HH").format(todayDt));
         int startday = DateQueue.pollFirst();
-        if(todaytime > 14){
+        if(today_time > 14){
             startday = DateQueue.pollFirst();
         }
 
@@ -329,13 +322,6 @@ public class MainActivity extends AppCompatActivity {
         TextView day_2_temp = (TextView)findViewById(R.id.day_2_temp);
         TextView day_2_time = (TextView)findViewById(R.id.day_2_time);
 
-//        day_2_icon.setTypeface(weatherFont);
-//        WeatherForecastElement day2 = lists.get(12);
-//        Weather day_weather2 = day2.getWeather().get(0);
-//        day_2_time.setText(new SimpleDateFormat("MM/dd").format(new Date(day2.getDt() * 1000L)));
-//        day_2_icon.setText(Html.fromHtml(Function.setWeatherIcon2(day_weather2.getId())));
-//        day_2_des.setText(day_weather2.getDescription());
-//        day_2_temp.setText(String.valueOf(day2.getMain().getTemp().intValue())+ "°");
         int day2 = DateQueue.pollFirst();
         day_2_icon.setTypeface(weatherFont);
         day_2_time.setText(DayDate.get(day2));
@@ -348,13 +334,6 @@ public class MainActivity extends AppCompatActivity {
         TextView day_3_temp = (TextView)findViewById(R.id.day_3_temp);
         TextView day_3_time = (TextView)findViewById(R.id.day_3_time);
 
-//        day_3_icon.setTypeface(weatherFont);
-//        WeatherForecastElement day3 = lists.get(20);
-//        Weather day_weather3 = day3.getWeather().get(0);
-//        day_3_time.setText(new SimpleDateFormat("MM/dd").format(new Date(day3.getDt() * 1000L)));
-//        day_3_icon.setText(Html.fromHtml(Function.setWeatherIcon2(day_weather3.getId())));
-//        day_3_des.setText(day_weather3.getDescription());
-//        day_3_temp.setText(String.valueOf(day3.getMain().getTemp().intValue())+ "°");
         int day3 = DateQueue.pollFirst();
         day_3_icon.setTypeface(weatherFont);
         day_3_time.setText(DayDate.get(day3));
@@ -367,13 +346,6 @@ public class MainActivity extends AppCompatActivity {
         TextView day_4_temp = (TextView)findViewById(R.id.day_4_temp);
         TextView day_4_time = (TextView)findViewById(R.id.day_4_time);
 
-//        day_4_icon.setTypeface(weatherFont);
-//        WeatherForecastElement day4 = lists.get(28);
-//        Weather day_weather4 = day4.getWeather().get(0);
-//        day_4_time.setText(new SimpleDateFormat("MM/dd").format(new Date(day4.getDt() * 1000L)));
-//        day_4_icon.setText(Html.fromHtml(Function.setWeatherIcon2(day_weather4.getId())));
-//        day_4_des.setText(day_weather4.getDescription());
-//        day_4_temp.setText(String.valueOf(day4.getMain().getTemp().intValue())+ "°");
         int day4 = DateQueue.pollFirst();
         day_4_icon.setTypeface(weatherFont);
         day_4_time.setText(DayDate.get(day4));
@@ -386,13 +358,6 @@ public class MainActivity extends AppCompatActivity {
         TextView day_5_temp = (TextView)findViewById(R.id.day_5_temp);
         TextView day_5_time = (TextView)findViewById(R.id.day_5_time);
 
-//        day_5_icon.setTypeface(weatherFont);
-//        WeatherForecastElement day5 = lists.get(35);
-//        Weather day_weather5 = day5.getWeather().get(0);
-//        day_5_time.setText(new SimpleDateFormat("MM/dd").format(new Date(day5.getDt() * 1000L)));
-//        day_5_icon.setText(Html.fromHtml(Function.setWeatherIcon2(day_weather5.getId())));
-//        day_5_des.setText(day_weather5.getDescription());
-//        day_5_temp.setText(String.valueOf(day5.getMain().getTemp().intValue())+ "°");
         int day5 = DateQueue.pollFirst();
         day_5_icon.setTypeface(weatherFont);
         day_5_time.setText(DayDate.get(day5));
