@@ -11,35 +11,48 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import mobile.li.weatherappnew.model.CityInfo;
+import mobile.li.weatherappnew.util.ModelUtils;
+
+import static mobile.li.weatherappnew.CityAdderActivity.KEY_CITY;
 
 public class CityListActivity extends AppCompatActivity {
 
     private static final int REQ_CODE_CITY_ADDER = 100;
+    private static final String MODEL_CITY_INFO = "city_info";
+
     private List<CityInfo> cities = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loadData();
         setupUI();
     }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQ_CODE_CITY_ADDER){
-            List<String> info = Arrays.asList(data.getStringExtra("city").split(","));
+            List<String> info = Arrays.asList(data.getStringExtra(KEY_CITY).split(","));
 
             CityInfo newCity = new CityInfo();
             newCity.name = info.get(0);
             newCity.code = info.get(1);
-            cities.add(newCity);
 
+            updateCity(newCity);
+            ModelUtils.save(this, MODEL_CITY_INFO, cities);
             setupCityUI();
-        }
+            }
+
+
     }
 
     private void setupUI() {
@@ -62,9 +75,30 @@ public class CityListActivity extends AppCompatActivity {
         cityLayout.removeAllViews();
         for(CityInfo c: cities){
             View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
-            ((Button) cityView.findViewById(R.id.city_item)).setText(c.name);
+            ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code);
             cityLayout.addView(cityView);
         }
 
+    }
+
+    private void loadData() {
+        List<CityInfo> saveCityInfo = ModelUtils.read(this,
+                MODEL_CITY_INFO,
+                new TypeToken<List<CityInfo>>(){});
+        cities = saveCityInfo == null ? new ArrayList<CityInfo>() : saveCityInfo;
+    }
+
+    private void updateCity(CityInfo cityInfo) {
+        boolean check = true;
+        for (CityInfo c : cities) {
+            if (c.equals(cityInfo)) {
+                check = false;
+                break;
+            }
+        }
+
+        if (check) {
+            cities.add(cityInfo);
+        }
     }
 }
