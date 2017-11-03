@@ -1,10 +1,12 @@
 package mobile.li.weatherappnew;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -25,7 +27,9 @@ import static mobile.li.weatherappnew.CityAdderActivity.KEY_CITY;
 public class CityListActivity extends AppCompatActivity {
 
     private static final int REQ_CODE_CITY_ADDER = 100;
+    private static final int REQ_CODE_CITY_DELETE = 101;
     private static final String MODEL_CITY_INFO = "city_info";
+
 
     private List<CityInfo> cities = new ArrayList<>();
 
@@ -35,24 +39,36 @@ public class CityListActivity extends AppCompatActivity {
 
         loadData();
         setupUI();
+
     }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQ_CODE_CITY_ADDER){
-            List<String> info = Arrays.asList(data.getStringExtra(KEY_CITY).split(","));
+        if (resultCode == Activity.RESULT_OK){
+            switch (requestCode) {
+                case REQ_CODE_CITY_ADDER:
+                    List<String> addInfo = Arrays.asList(data.getStringExtra(KEY_CITY).split(","));
 
-            CityInfo newCity = new CityInfo();
-            newCity.name = info.get(0);
-            newCity.code = info.get(1);
+                    CityInfo newCity = new CityInfo();
+                    newCity.name = addInfo.get(0).trim();
+                    newCity.code = addInfo.get(1).trim();
 
-            updateCity(newCity);
-            ModelUtils.save(this, MODEL_CITY_INFO, cities);
-            setupCityUI();
+                    if(newCity != null){
+                        deleteCity(newCity.name, newCity.code);
+                    }
+                    cities.add(newCity);
+                    ModelUtils.save(this, MODEL_CITY_INFO, cities);
+                    setupCityUI();
+                    break;
+                case REQ_CODE_CITY_DELETE:
+                    String deleteCityName = data.getStringExtra(CityDeleteActivity.DELETE_CITY_NAME);
+                    String deleteCityCode = data.getStringExtra(CityDeleteActivity.DELETE_CITY_CODE);
+                    deleteCity(deleteCityName, deleteCityCode);
+                    ModelUtils.save(this, MODEL_CITY_INFO, cities);
+                    setupCityUI();
+                    break;
             }
-
-
+        }
     }
 
     private void setupUI() {
@@ -67,6 +83,7 @@ public class CityListActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQ_CODE_CITY_ADDER);
             }
         });
+
     }
 
 
@@ -75,10 +92,24 @@ public class CityListActivity extends AppCompatActivity {
         cityLayout.removeAllViews();
         for(CityInfo c: cities){
             View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
-            ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code);
+            setupCity(cityView, c);
             cityLayout.addView(cityView);
         }
+    }
 
+    private void setupCity(View cityView, final CityInfo c){
+        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code);
+
+        ImageButton cityDeleteBtn = (ImageButton) cityView.findViewById(R.id.city_item_delete);
+        cityDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CityListActivity.this, CityDeleteActivity.class);
+                String s = c.name + "," + c.code;
+                intent.putExtra(CityDeleteActivity.DELETE_CITY, s);
+                startActivityForResult(intent, REQ_CODE_CITY_DELETE);
+            }
+        });
     }
 
     private void loadData() {
@@ -88,17 +119,13 @@ public class CityListActivity extends AppCompatActivity {
         cities = saveCityInfo == null ? new ArrayList<CityInfo>() : saveCityInfo;
     }
 
-    private void updateCity(CityInfo cityInfo) {
-        boolean check = true;
-        for (CityInfo c : cities) {
-            if (c.equals(cityInfo)) {
-                check = false;
+    private void deleteCity(String name, String code){
+        for (int i = 0; i < cities.size(); ++i){
+            CityInfo c = cities.get(i);
+            if(TextUtils.equals(c.name, name) && TextUtils.equals(c.code, code)){
+                cities.remove(i);
                 break;
             }
-        }
-
-        if (check) {
-            cities.add(cityInfo);
         }
     }
 }
