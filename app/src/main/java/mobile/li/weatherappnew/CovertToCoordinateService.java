@@ -4,6 +4,9 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Li on 2017/11/2.
  */
@@ -13,7 +16,8 @@ public class CovertToCoordinateService {
     private String countryName;
     private Double latitude;
     private Double longitude;
-    private boolean success = false;
+    private String currentTime;
+    private String currentTemp;
 
     CovertToCoordinateService(String InputCityName, String InputCountryName){
         cityName = InputCityName;
@@ -28,7 +32,13 @@ public class CovertToCoordinateService {
         if(cityName != null && countryName != null){
             try{
                 JSONObject object = asyncTask.execute(cityName, countryName).get();
+
                 JSONObject coor = object.getJSONObject("coord");
+                currentTime = new SimpleDateFormat("hh:mm a").format(new Date(object.getLong("dt") * 1000L));
+
+                JSONObject main = object.getJSONObject("main");
+                currentTemp = main.getString("temp");
+
                 String lat = coor.getString("lat");
                 String lon = coor.getString("lon");
                 latitude = Double.valueOf(lat);
@@ -36,8 +46,11 @@ public class CovertToCoordinateService {
                 Log.v("Information", "[CovertToCoordinateService] [Convert successful]:"
                         + " |City: " + cityName
                         + " |Country: " + countryName
-                        + " |lat: " + lat
-                        + " |lon: " + lon);
+                        + " |Lat: " + lat
+                        + " |Lon: " + lon
+                        + " |Local time: " + currentTime
+                        + " |Temp: " + currentTemp
+                );
 
             }catch(Exception e){
 
@@ -62,6 +75,24 @@ public class CovertToCoordinateService {
             return longitude;
         }else{
             Log.e("ERROR: ", "[CovertToCoordinateService]: longitudePOST");
+        }
+        return null;
+    }
+
+    public String getCurrentTime(){
+        if(currentTime != null){
+            return currentTime;
+        }else{
+            Log.e("ERROR: ", "[CovertToCoordinateService]: CurrentTimePOST");
+        }
+        return null;
+    }
+
+    public String getCurrentTemp(){
+        if(currentTemp != null){
+            return currentTemp;
+        }else{
+            Log.e("ERROR: ", "[CovertToCoordinateService]: CurrentTempPOST");
         }
         return null;
     }

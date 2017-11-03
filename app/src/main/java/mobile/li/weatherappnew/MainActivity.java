@@ -2,6 +2,7 @@ package mobile.li.weatherappnew;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity{
     private String provider;
     private static Location location;
 
+    private static final int REQ_CODE_CITY_LIST = 99;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,15 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         loadWeather();
+
+        (findViewById(R.id.listButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CityListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 //        Function.placeIdTask asyncTask =new Function.placeIdTask(new Function.AsyncResponse() {
 //            public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn, String weather_iconText, String sun_rise) {
@@ -166,12 +179,17 @@ public class MainActivity extends AppCompatActivity{
 
 //        CovertToCoordinateService s1 = new CovertToCoordinateService("Beijing", "CN");
 //        s1.CovertToCoordinateExecuate();
-//        Double testlatDouble = s1.getLatitude();
-//        Double testlonDouble = s1.getLongitude();
+//        Double testLatDouble = s1.getLatitude();
+//        Double testLonDouble = s1.getLongitude();
+//        String testTime = s1.getCurrentTime();
+//        String testTemp = s1.getCurrentTemp();
 //
-//        String testlat = String.valueOf(testlatDouble);
-//        String testlon = String.valueOf(testlonDouble);
-//        Toast.makeText(this, "[TEST]: " + testlat + " : " + testlon, Toast.LENGTH_LONG).show();
+//        String testlat = String.valueOf(testLatDouble);
+//        String testlon = String.valueOf(testLonDouble);
+//        Toast.makeText(this, "[TEST]: Lat:" + testlat
+//                + " Lon: " + testlon
+//                + " Local Time: " + testTime
+//                + " Local Temp: " + testTemp, Toast.LENGTH_LONG).show();
 
         mOWService.getCurrentDayForecast(coordinate, new OWRequestListener<CurrentWeather>() {
             @Override
@@ -317,7 +335,9 @@ public class MainActivity extends AppCompatActivity{
         now_18_icon.setTypeface(weatherFont);
         WeatherForecastElement now18 = lists.get(6);
         Weather now_weather18 = now18.getWeather().get(0);
+        //Date now_date = new Date(now18.getDt() * 1000L);
         now_18_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now18.getDt() * 1000L)));
+        //now_18_time.setText(String.valueOf(now_date.getTimezoneOffset()));
         now_18_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather18.getId(), sunrise, sunset,(long)now18.getDt() * 1000)));
         now_18_des.setText(now_weather18.getDescription());
         now_18_temp.setText(String.valueOf(now18.getMain().getTemp().intValue())+ "°");
@@ -460,12 +480,19 @@ public class MainActivity extends AppCompatActivity{
         TextView day_5_temp = (TextView)findViewById(R.id.day_5_temp);
         TextView day_5_time = (TextView)findViewById(R.id.day_5_time);
 
-        int day5 = DateQueue.pollFirst();
-        day_5_icon.setTypeface(weatherFont);
-        day_5_time.setText(DayDate.get(day5));
-        day_5_icon.setText(Html.fromHtml(Function.setWeatherIcon2(DayId.get(day5))));
-        day_5_des.setText(DayDes.get(day5));
-        day_5_temp.setText(String.valueOf(DayMax.get(day5)) + "/" + String.valueOf(DayMin.get(day5)) + "°C");
-
+        if(DayDes.size() > 4){
+            int day5 = DateQueue.pollFirst();
+            day_5_icon.setTypeface(weatherFont);
+            day_5_time.setText(DayDate.get(day5));
+            day_5_icon.setText(Html.fromHtml(Function.setWeatherIcon2(DayId.get(day5))));
+            day_5_des.setText(DayDes.get(day5));
+            day_5_temp.setText(String.valueOf(DayMax.get(day5)) + "/" + String.valueOf(DayMin.get(day5)) + "°C");
+        }else{
+            day_5_icon.setTypeface(weatherFont);
+            day_5_time.setText("");
+            day_5_icon.setText("");
+            day_5_des.setText("");
+            day_5_temp.setText("");
+        }
     }
 }

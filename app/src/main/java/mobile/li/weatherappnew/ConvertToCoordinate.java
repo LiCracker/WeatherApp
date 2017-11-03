@@ -23,7 +23,7 @@ public class ConvertToCoordinate{
     }
 
     private static final String OPEN_WEATHER_MAP_URL =
-            "http://api.openweathermap.org/data/2.5/weather?q=%s,%s";
+            "http://api.openweathermap.org/data/2.5/weather?q=%s,%s&units=metric";
 
     private static final String OPEN_WEATHER_MAP_API = "3a3b335b2f571f559d800d785915a563";
 
