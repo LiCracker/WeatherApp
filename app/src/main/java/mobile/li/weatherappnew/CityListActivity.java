@@ -41,35 +41,6 @@ public class CityListActivity extends AppCompatActivity {
         loadData();
         setupUI();
 
-        (findViewById(R.id.city_item)).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
-                String bString = ((Button)cityView.findViewById(R.id.city_item)).getText().toString();
-                String result = "0";
-                String btnName = "";
-                String btnCode = "";
-                Double lat = 0.0;
-                Double lon = 0.0;
-
-                if(TextUtils.equals(bString, "CURRENT")){
-                    result = "1";
-                }else{
-                    List<String> btnInfo = Arrays.asList(bString.split(","));
-                    btnName = btnInfo.get(0).trim();
-                    btnCode = btnInfo.get(1).trim();
-                    CovertToCoordinateService s1 = new CovertToCoordinateService(btnName,btnCode);
-                    lat = s1.getLatitude();
-                    lon = s1.getLongitude();
-                }
-
-                result += "#" + lat + "" + "," + lon + "";
-                Intent intent = new Intent(CityListActivity.this, MainActivity.class);
-                intent.putExtra(KEY_LAT_LON, result);
-                startActivity(intent);
-            }
-        });
-
     }
 
 
@@ -102,7 +73,7 @@ public class CityListActivity extends AppCompatActivity {
     }
 
     private void setupUI() {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_city_list);
 
         setupCityUI();
 
@@ -138,6 +109,26 @@ public class CityListActivity extends AppCompatActivity {
                 String s = c.name + "," + c.code;
                 intent.putExtra(CityDeleteActivity.DELETE_CITY, s);
                 startActivityForResult(intent, REQ_CODE_CITY_DELETE);
+            }
+        });
+
+        (cityView.findViewById(R.id.city_item)).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                String bString = ((Button)findViewById(R.id.city_item)).getText().toString();
+
+                List<String> btnInfo = Arrays.asList(bString.split(","));
+                String btnName = btnInfo.get(0).trim();
+                String btnCode = btnInfo.get(1).trim();
+                CovertToCoordinateService s1 = new CovertToCoordinateService(btnName,btnCode);
+                Double lat = s1.getLatitude();
+                Double lon = s1.getLongitude();
+
+                String result = lat + "" + "," + lon + "";
+                Intent intent = new Intent(CityListActivity.this, MainActivity.class);
+                intent.putExtra(KEY_LAT_LON, result);
+                startActivity(intent);
+                finish();
             }
         });
     }

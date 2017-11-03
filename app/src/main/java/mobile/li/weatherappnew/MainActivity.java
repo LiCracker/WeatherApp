@@ -63,14 +63,6 @@ public class MainActivity extends AppCompatActivity{
 
         loadWeather();
 
-        (findViewById(R.id.listButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CityListActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
 //        Function.placeIdTask asyncTask =new Function.placeIdTask(new Function.AsyncResponse() {
 //            public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn, String weather_iconText, String sun_rise) {
@@ -119,6 +111,15 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private void loadWeather(){
+        (findViewById(R.id.listButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CityListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
 
         cityField = (TextView)findViewById(R.id.city_field);
