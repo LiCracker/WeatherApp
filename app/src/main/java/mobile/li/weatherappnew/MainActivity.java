@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import az.openweatherapi.OWService;
 import az.openweatherapi.listener.OWRequestListener;
@@ -34,7 +35,6 @@ import az.openweatherapi.model.gson.current_day.CurrentWeather;
 import az.openweatherapi.model.gson.five_day.ExtendedWeather;
 import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
-
 
 public class MainActivity extends AppCompatActivity{
 
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity{
 
         locationManager.requestLocationUpdates(provider, 2000, 2, locationListener);
 
-        Coord coordinate = new Coord();
+        final Coord coordinate = new Coord();
         if(location == null){
             Toast.makeText(this, "Get User Location Error. Use Default Location", Toast.LENGTH_LONG).show();
             coordinate.setLat(37.338981);
@@ -163,6 +163,15 @@ public class MainActivity extends AppCompatActivity{
             coordinate.setLat(currLatitude);
             coordinate.setLon(currLongitude);
         }
+
+//        CovertToCoordinateService s1 = new CovertToCoordinateService("Beijing", "CN");
+//        s1.CovertToCoordinateExecuate();
+//        Double testlatDouble = s1.getLatitude();
+//        Double testlonDouble = s1.getLongitude();
+//
+//        String testlat = String.valueOf(testlatDouble);
+//        String testlon = String.valueOf(testlonDouble);
+//        Toast.makeText(this, "[TEST]: " + testlat + " : " + testlon, Toast.LENGTH_LONG).show();
 
         mOWService.getCurrentDayForecast(coordinate, new OWRequestListener<CurrentWeather>() {
             @Override
