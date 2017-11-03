@@ -29,6 +29,7 @@ public class CityListActivity extends AppCompatActivity {
     private static final int REQ_CODE_CITY_ADDER = 100;
     private static final int REQ_CODE_CITY_DELETE = 101;
     private static final String MODEL_CITY_INFO = "city_info";
+    public static final String KEY_LAT_LON = "city_lat_lon";
 
 
     private List<CityInfo> cities = new ArrayList<>();
@@ -39,6 +40,35 @@ public class CityListActivity extends AppCompatActivity {
 
         loadData();
         setupUI();
+
+        (findViewById(R.id.city_item)).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
+                String bString = ((Button)cityView.findViewById(R.id.city_item)).getText().toString();
+                String result = "0";
+                String btnName = "";
+                String btnCode = "";
+                Double lat = 0.0;
+                Double lon = 0.0;
+
+                if(TextUtils.equals(bString, "CURRENT")){
+                    result = "1";
+                }else{
+                    List<String> btnInfo = Arrays.asList(bString.split(","));
+                    btnName = btnInfo.get(0).trim();
+                    btnCode = btnInfo.get(1).trim();
+                    CovertToCoordinateService s1 = new CovertToCoordinateService(btnName,btnCode);
+                    lat = s1.getLatitude();
+                    lon = s1.getLongitude();
+                }
+
+                result += "#" + lat + "" + "," + lon + "";
+                Intent intent = new Intent(CityListActivity.this, MainActivity.class);
+                intent.putExtra(KEY_LAT_LON, result);
+                startActivity(intent);
+            }
+        });
 
     }
 
