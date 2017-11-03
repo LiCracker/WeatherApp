@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CityListActivity" />
-        <activity android:name=".CityAdderActivity"></activity>
+        <activity android:name=".CityAdderActivity" />
+        <activity android:name=".CityDeleteActivity"></activity>
     </application>
 
 </manifest>

@@ -18,12 +18,13 @@
         android:id="@+id/city_adder_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Country Code"/>
+        android:hint="Country Code" />
 
     <Button
         android:id="@+id/city_adder_addButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_green_light"
         android:text="Add City" />
 
 

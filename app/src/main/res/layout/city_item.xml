@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:background="#3F51B5"
     android:padding="20dp">
@@ -15,10 +16,28 @@
     <!--android:text="City, Time, Temp" />-->
 
 
-    <Button
-        android:id="@+id/city_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Button" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/city_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="99"
+            android:text="Button" />
+
+        <ImageButton
+            android:id="@+id/city_item_delete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_delete" />
+
+    </LinearLayout>
+
 </LinearLayout>
