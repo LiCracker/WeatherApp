@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity{
             Log.v(TAG, "Current Longitude: " + String.valueOf(currLongitude));
         }
 
-        locationManager.requestLocationUpdates(provider, 2000, 2, locationListener);
+        locationManager.requestLocationUpdates(provider, 2000, 100, locationListener); // 2000, 2
 
         if(userLocation != null){
             return new Coor(userLocation.getLatitude(), userLocation.getLongitude(), true);
@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
 
-            if(currtime >= 10 && currtime <= 14){
+            if(currtime <= 14){ //currtime >= 10 &&
                 DayDes.put(currdate, currdes);
                 DayId.put(currdate, currid);
             }
