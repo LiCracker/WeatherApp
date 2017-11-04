@@ -11,6 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import mobile.li.weatherappnew.model.ValidCountryCode;
+
 public class CityAdderActivity extends AppCompatActivity {
 
     private String name = "";
@@ -27,14 +32,19 @@ public class CityAdderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 saveAndExit();
-                if(name != " " && code != " ") {
-                    String result = name + "," + code;
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra(KEY_CITY, result);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
-                }else{
+                ValidCountryCode valid = new ValidCountryCode();
+                Set<String> set = new HashSet<>();
+                valid.getCode(set);
+                if(name == " " || code == " " ) {
                     Toast.makeText(CityAdderActivity.this, "Please fill all the blank", Toast.LENGTH_LONG).show();
+                }else if(!set.contains(code)) {
+                    Toast.makeText(CityAdderActivity.this, "Please enter the valid country code. e.g. USA = US", Toast.LENGTH_LONG).show();
+                }else{
+                        String result = name + "," + code;
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra(KEY_CITY, result);
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
                 }
             }
         });
@@ -46,9 +56,9 @@ public class CityAdderActivity extends AppCompatActivity {
     private void saveAndExit(){
 
 
-        name = ((EditText) findViewById(R.id.city_adder_name)).getText().toString();
+        name = ((EditText) findViewById(R.id.city_adder_name)).getText().toString().toUpperCase();
 
-        code = ((EditText) findViewById(R.id.city_adder_code)).getText().toString();
+        code = ((EditText) findViewById(R.id.city_adder_code)).getText().toString().toUpperCase();
 
         if(name == null || name.trim().equals("")){
             name = " ";

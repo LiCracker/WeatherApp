@@ -36,6 +36,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:tint="@android:color/holo_red_dark"
             app:srcCompat="@android:drawable/ic_delete" />
 
     </LinearLayout>

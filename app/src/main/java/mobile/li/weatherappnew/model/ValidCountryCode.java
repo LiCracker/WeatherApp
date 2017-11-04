@@ -1,5 +1,7 @@
 package mobile.li.weatherappnew.model;
 
+import android.text.TextUtils;
+
 import java.util.Set;
 
 /**
@@ -13,10 +15,8 @@ public class ValidCountryCode {
 
     public ValidCountryCode(){};
 
-    private Set<String> getCode(Set<String> set){
+    public void getCode(Set<String> set){
         set.add(usCode);
         set.add(chinaCode);
-
-        return set;
     }
 }

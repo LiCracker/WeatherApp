@@ -138,19 +138,12 @@ public class CityListActivity extends AppCompatActivity {
         (cityView.findViewById(R.id.city_item)).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                String bString = ((Button)findViewById(R.id.city_item)).getText().toString();
-
-                List<String> btnInfo = Arrays.asList(bString.split("   "));
-                String nameCode = btnInfo.get(0).trim();
-                List<String> btnInfo2 = Arrays.asList(nameCode.split(","));
-                String btnName = btnInfo2.get(0).trim();
-                String btnCode = btnInfo2.get(1).trim();
-                CovertToCoordinateService s1 = new CovertToCoordinateService(btnName,btnCode);
+                CovertToCoordinateService s1 = new CovertToCoordinateService(c.name, c.code);
                 s1.CovertToCoordinateExecuate();
                 Double lat = s1.getLatitude();
                 Double lon = s1.getLongitude();
 
-                String result = "0" + "," + lat + "" + "," + lon + "";
+                String result = "0" + "," + String.valueOf(lat) + "," + String.valueOf(lon);
                 Intent intent = new Intent(CityListActivity.this, MainActivity.class);
                 intent.putExtra(KEY_LAT_LON, result);
                 startActivity(intent);
