@@ -37,6 +37,7 @@ import az.openweatherapi.model.gson.current_day.CurrentWeather;
 import az.openweatherapi.model.gson.five_day.ExtendedWeather;
 import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
+import mobile.li.weatherappnew.model.Coor;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -51,9 +52,9 @@ public class MainActivity extends AppCompatActivity{
 
     private LocationManager locationManager;
     private String provider;
-    private static Location location;
-
-    private static final int REQ_CODE_CITY_LIST = 99;
+    private static boolean intentBackCurr = false;
+    Coor intentLocation;
+    Coor userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,23 +62,34 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        loadWeather();
+        (findViewById(R.id.listButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CityListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
+        intentLocation = getIntentLocation();
+        userLocation = getUserLocation();
 
-//        Function.placeIdTask asyncTask =new Function.placeIdTask(new Function.AsyncResponse() {
-//            public void processFinish(String weather_city, String weather_description, String weather_temperature, String weather_humidity, String weather_pressure, String weather_updatedOn, String weather_iconText, String sun_rise) {
-//
-//                cityField.setText(weather_city);
-//                updatedField.setText(weather_updatedOn);
-//                detailsField.setText(weather_description);
-//                currentTemperatureField.setText(weather_temperature);
-//                //humidity_field.setText("Humidity: "+weather_humidity);
-//                //pressure_field.setText("Pressure: "+weather_pressure);
-//                weatherIcon.setText(Html.fromHtml(weather_iconText));
-//
-//            }
-//        });
-//        asyncTask.execute("37.338981", "-121.886087"); //  asyncTask.execute("Latitude", "Longitude")
+        if(intentLocation == null){
+            if(userLocation == null){
+                loadWeather(null);
+            }else{
+                loadWeather(userLocation);
+            }
+        }else{
+            if(userLocation != null && userLocation.equals(intentLocation)){
+                loadWeather(userLocation);
+            }else if(userLocation == null || (userLocation != null && !userLocation.equals(intentLocation))){
+                loadWeather(intentLocation);
+            }else{
+                loadWeather(null);
+            }
+        }
+
     }
 
     LocationListener locationListener = new LocationListener() {
@@ -96,29 +108,123 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         public void onLocationChanged(Location arg0) {
-            location = arg0;
-            if(location != null){
-                String logChangeLat = String.format("%.2f", location.getLatitude());
-                String logChangeLon = String.format("%.2f", location.getLongitude());
+            Coor locationChangedCoor = null;
+            if(arg0 != null){
+                String logChangeLat = String.format("%.2f", arg0.getLatitude());
+                String logChangeLon = String.format("%.2f", arg0.getLongitude());
+                locationChangedCoor = new Coor(arg0.getLatitude(), arg0.getLongitude(), true);
                 Toast.makeText(getBaseContext(), "[Location Updated] Lat: " + logChangeLat + " Lon: " + logChangeLon, Toast.LENGTH_SHORT).show();
                 Log.v(TAG, "Latitude Changed: " + logChangeLat);
                 Log.v(TAG, "Longitude Changed: " + logChangeLon);
             }else{
                 Toast.makeText(getBaseContext(), "Please check your Internet and GPS settings.", Toast.LENGTH_LONG).show();
             }
-            loadWeather();
+
+            //intentLocation == null
+            //loadWeather(locationChangedCoor)
+            if(intentLocation == null){
+                loadWeather(locationChangedCoor);
+            } else if(intentLocation != null && locationChangedCoor != null && intentLocation.equals(locationChangedCoor)){
+                //locationChangedCoor != null and intentLocation != null and intentLocation.equals(arg0)
+                //loadWeather(locationChangedCoor)
+                loadWeather(locationChangedCoor);
+            } else if(intentLocation != null && locationChangedCoor != null && !intentLocation.equals(locationChangedCoor)){
+                //locationChangedCoor != null and intentLocation != null and !intentLocation.equals(arg0)
+                //loadWeather(intentLocation)
+                loadWeather(intentLocation);
+            } else if(intentLocation != null && locationChangedCoor == null){
+                loadWeather(intentLocation);
+            }
+
         }
     };
 
-    private void loadWeather(){
-        (findViewById(R.id.listButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CityListActivity.class);
-                startActivity(intent);
-                finish();
+    private Coor getIntentLocation(){
+        String intentString = getIntent().getStringExtra(CityListActivity.KEY_LAT_LON);
+        if(intentString != null){
+            String[] intentpartial = intentString.split(",");
+            if(intentpartial.length == 3){
+                if(intentpartial[0] == "1"){
+                    intentBackCurr = true;
+                    Log.v(TAG, "[IntentLocation] currentLocation");
+                    return null;
+                }else{
+                    intentBackCurr = false;
+                    Double intent_lat = Double.valueOf(intentpartial[1]);
+                    Double intent_lon = Double.valueOf(intentpartial[2]);
+                    if(intent_lat.intValue() == 0 && intent_lon.intValue() == 0){
+                        intentBackCurr = true;
+                        Log.v(TAG, "[IntentLocation] currentLocation");
+                        return null;
+                    }
+                    Log.v(TAG, "[IntentLocation] Latitude: " + intentpartial[1] + " Longitude:" + intentpartial[2]);
+                    return new Coor(intent_lat, intent_lon, false);
+                }
+            }else{
+                Log.e(TAG, "[IntentLocation] null");
+                return null;
             }
-        });
+        }else{
+            Log.e(TAG, "[IntentLocation] null");
+            return null;
+        }
+
+    }
+
+    private Coor getUserLocation(){
+        Location userLocation;
+
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+                    MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  }, 1);
+        }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        List<String> list = locationManager.getProviders(true);
+
+        if (list.contains(LocationManager.GPS_PROVIDER)) {
+            provider = LocationManager.GPS_PROVIDER;
+        } else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+            provider = LocationManager.NETWORK_PROVIDER;
+        } else {
+            Toast.makeText(this, "Please check your Internet and GPS settings.", Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        double currLatitude = 0;
+        double currLongitude = 0;
+
+        userLocation = locationManager.getLastKnownLocation(provider);
+        if (userLocation != null) {
+            currLatitude = userLocation.getLatitude();
+            Log.v(TAG, "Current Latitude: " + String.valueOf(currLatitude));
+            currLongitude = userLocation.getLongitude();
+            Log.v(TAG, "Current Longitude: " + String.valueOf(currLongitude));
+        }
+
+        locationManager.requestLocationUpdates(provider, 2000, 2, locationListener);
+
+        if(userLocation != null){
+            return new Coor(userLocation.getLatitude(), userLocation.getLongitude(), true);
+        }else{
+            return null;
+        }
+    }
+
+    private void loadWeather(final Coor inputCoor){
+        final Coord coordinate = new Coord();
+        if(inputCoor == null){
+            Toast.makeText(this, "Get User Location Error. Use Default Location", Toast.LENGTH_LONG).show();
+            coordinate.setLat(37.338981);
+            coordinate.setLon(-121.886087);
+        }else{
+            coordinate.setLat(inputCoor.getLatitude());
+            coordinate.setLon(inputCoor.getLongitude());
+        }
 
         weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
 
@@ -131,52 +237,6 @@ public class MainActivity extends AppCompatActivity{
 
         OWService mOWService = new OWService("3a3b335b2f571f559d800d785915a563");
         mOWService.setMetricUnits(OWSupportedUnits.METRIC);
-
-        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
-                    MY_PERMISSION_ACCESS_COARSE_LOCATION );
-        }
-
-        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions( this, new String[] {  Manifest.permission.ACCESS_FINE_LOCATION  }, 1);
-        }
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        List<String> list = locationManager.getProviders(true);
-
-        if (list.contains(LocationManager.GPS_PROVIDER)) {
-            provider = LocationManager.GPS_PROVIDER;
-        }
-        else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
-            provider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            Toast.makeText(this, "Please check your Internet and GPS settings.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        double currLatitude = 0;
-        double currLongitude = 0;
-
-        location = locationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            currLatitude = location.getLatitude();
-            Log.v(TAG, "Current Latitude: " + String.valueOf(currLatitude));
-            currLongitude = location.getLongitude();
-            Log.v(TAG, "Current Longitude: " + String.valueOf(currLongitude));
-        }
-
-        locationManager.requestLocationUpdates(provider, 2000, 2, locationListener);
-
-        final Coord coordinate = new Coord();
-        if(location == null){
-            Toast.makeText(this, "Get User Location Error. Use Default Location", Toast.LENGTH_LONG).show();
-            coordinate.setLat(37.338981);
-            coordinate.setLon(-121.886087);
-        }else{
-            coordinate.setLat(currLatitude);
-            coordinate.setLon(currLongitude);
-        }
 
 //        CovertToCoordinateService s1 = new CovertToCoordinateService("Beijing", "CN");
 //        s1.CovertToCoordinateExecuate();
@@ -205,11 +265,12 @@ public class MainActivity extends AppCompatActivity{
 
                 long responsetime = (long)currentWeather.getDt() * 1000;
                 StringBuilder cityText = new StringBuilder();
-                if(location == null){
+                if(inputCoor == null){
                     cityText.append("[Default] ");
-                }else{
+                }else if(inputCoor.isCurrentLocation() == true){
                     cityText.append("➹ ");
                 }
+
                 cityText.append(currentWeather.getName() + ", " +currentWeather.getSys().getCountry());
 
                 cityField.setText(cityText.toString());
@@ -219,7 +280,7 @@ public class MainActivity extends AppCompatActivity{
                 weatherIcon.setText(Html.fromHtml(Function.setWeatherIcon(currentDetail.getId(), sunrise, sunset, responsetime)));
 
 
-                Log.i(TAG, "CURRENT Time: " + currentDateTimeString
+                Log.i(TAG, "[mOWService]CURRENT Time: " + currentDateTimeString
                         + " Temp: " + String.valueOf(currentWeather.getMain().getTemp().intValue())
                         + " Des: " + currentDetail.getDescription()
                         + " Id: "+ String.valueOf(currentDetail.getId()));
