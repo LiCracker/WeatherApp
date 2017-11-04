@@ -122,7 +122,8 @@ public class CityListActivity extends AppCompatActivity {
         s.CovertToCoordinateExecuate();
         String temp = s.getCurrentTemp();
 
-        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code + "   " + temp);
+
+        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code + "   " + temp + "°C");
 
         ImageButton cityDeleteBtn = (ImageButton) cityView.findViewById(R.id.city_item_delete);
         cityDeleteBtn.setOnClickListener(new View.OnClickListener() {
