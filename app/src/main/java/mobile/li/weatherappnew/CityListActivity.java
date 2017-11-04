@@ -91,6 +91,9 @@ public class CityListActivity extends AppCompatActivity {
     private void setupCityUI(){
         LinearLayout cityLayout = findViewById(R.id.city_list);
         cityLayout.removeAllViews();
+        View currentView = getLayoutInflater().inflate(R.layout.city_current, null);
+        setupCurrent(currentView);
+        cityLayout.addView(currentView);
         for(CityInfo c: cities){
             View cityView = getLayoutInflater().inflate(R.layout.city_item, null);
             setupCity(cityView, c);
@@ -98,8 +101,28 @@ public class CityListActivity extends AppCompatActivity {
         }
     }
 
+    private void setupCurrent(View currentView){
+        ((Button) currentView.findViewById(R.id.city_current)).setText("CURRENT");
+
+        (currentView.findViewById(R.id.city_current)).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                String result = "1,0.0,0.0";
+                Intent intent = new Intent(CityListActivity.this, MainActivity.class);
+                intent.putExtra(KEY_LAT_LON, result);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+
     private void setupCity(View cityView, final CityInfo c){
-        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code);
+        CovertToCoordinateService s = new CovertToCoordinateService(c.name, c.code);
+        s.CovertToCoordinateExecuate();
+        String temp = s.getCurrentTemp();
+
+        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code + "   " + temp);
 
         ImageButton cityDeleteBtn = (ImageButton) cityView.findViewById(R.id.city_item_delete);
         cityDeleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -117,14 +140,17 @@ public class CityListActivity extends AppCompatActivity {
             public void onClick(View view){
                 String bString = ((Button)findViewById(R.id.city_item)).getText().toString();
 
-                List<String> btnInfo = Arrays.asList(bString.split(","));
-                String btnName = btnInfo.get(0).trim();
-                String btnCode = btnInfo.get(1).trim();
+                List<String> btnInfo = Arrays.asList(bString.split("   "));
+                String nameCode = btnInfo.get(0).trim();
+                List<String> btnInfo2 = Arrays.asList(nameCode.split(","));
+                String btnName = btnInfo2.get(0).trim();
+                String btnCode = btnInfo2.get(1).trim();
                 CovertToCoordinateService s1 = new CovertToCoordinateService(btnName,btnCode);
+                s1.CovertToCoordinateExecuate();
                 Double lat = s1.getLatitude();
                 Double lon = s1.getLongitude();
 
-                String result = lat + "" + "," + lon + "";
+                String result = "0" + "," + lat + "" + "," + lon + "";
                 Intent intent = new Intent(CityListActivity.this, MainActivity.class);
                 intent.putExtra(KEY_LAT_LON, result);
                 startActivity(intent);
