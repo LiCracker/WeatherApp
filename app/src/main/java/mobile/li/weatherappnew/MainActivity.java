@@ -27,6 +27,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import az.openweatherapi.OWService;
 import az.openweatherapi.listener.OWRequestListener;
@@ -38,6 +39,9 @@ import az.openweatherapi.model.gson.five_day.ExtendedWeather;
 import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
 import mobile.li.weatherappnew.model.Coor;
+
+import static mobile.li.weatherappnew.Function.castDate;
+import static mobile.li.weatherappnew.Function.castDateCurr;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -252,18 +256,30 @@ public class MainActivity extends AppCompatActivity{
 //                + " Local Time: " + testTime
 //                + " Local Temp: " + testTemp, Toast.LENGTH_LONG).show();
 
+//        getWeatherDataService g1 = new getWeatherDataService(String.valueOf(coordinate.getLat()), String.valueOf(coordinate.getLon()));
+//        Toast.makeText(this, "[TEST]: CityName:" + g1.getCityName()
+//                + " CountryName: " + g1.getCountryName()
+//                + " Local Time: " + g1.getCurrentTime()
+//                + " Local Temp: " + g1.getCurrentTime(), Toast.LENGTH_LONG).show();
+
         mOWService.getCurrentDayForecast(coordinate, new OWRequestListener<CurrentWeather>() {
             @Override
             public void onResponse(OWResponse<CurrentWeather> response) {
                 CurrentWeather currentWeather = response.body();
 
-                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                updatedField.setText("Last Updated : " + currentDateTimeString);
+                SimpleDateFormat dateFormat =new SimpleDateFormat("MMM d, hh:mm a");
+                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                sunrise = (long)currentWeather.getSys().getSunrise() * 1000;
-                sunset = (long)currentWeather.getSys().getSunset() * 1000;
+                String currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
+                //String currentDateTimeString = dateFormat.format(castDateCurr(new Date(currentWeather.getDt() * 1000L), coordinate.getLon().intValue()));
+                String currentDateTimeString = dateFormat.format(castDateCurr(new Date(System.currentTimeMillis()), coordinate.getLon().intValue()));
+                updatedField.setText("Updated in Local time: " + currentDateTimeString);
 
-                long responsetime = (long)currentWeather.getDt() * 1000;
+                sunrise = castDateCurr(new Date((long)currentWeather.getSys().getSunrise() * 1000L), coordinate.getLon().intValue()).getTime();
+                sunset = castDateCurr(new Date((long)currentWeather.getSys().getSunset() * 1000L), coordinate.getLon().intValue()).getTime();
+
+                //long responsetime = (long)currentWeather.getDt() * 1000;
+                long responsetime = castDateCurr(new Date((long)currentWeather.getDt() * 1000L), coordinate.getLon().intValue()).getTime();
                 StringBuilder cityText = new StringBuilder();
                 if(inputCoor == null){
                     cityText.append("[Default] ");
@@ -298,7 +314,7 @@ public class MainActivity extends AppCompatActivity{
                 ExtendedWeather extendedWeather = response.body();
 
                 List<WeatherForecastElement> lists = extendedWeather.getList();
-                updateItems(lists);
+                updateItems(lists, coordinate.getLon().intValue());
             }
 
             @Override
@@ -308,8 +324,10 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    private void updateItems(List<WeatherForecastElement> lists){
+    private void updateItems(List<WeatherForecastElement> lists, int lon){
         weatherFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/weathericons-regular-webfont.ttf");
+        SimpleDateFormat dateFormat =new SimpleDateFormat("h:mm a");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         TextView now_icon = (TextView)findViewById(R.id.now_icon);
         TextView now_des = (TextView)findViewById(R.id.now_des);
@@ -319,8 +337,10 @@ public class MainActivity extends AppCompatActivity{
         now_icon.setTypeface(weatherFont);
         WeatherForecastElement now = lists.get(0);
         Weather now_weather = now.getWeather().get(0);
-        now_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now.getDt() * 1000L)));
-        now_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather.getId(), sunrise, sunset, (long)now.getDt() * 1000)));
+        long now_responsetime = castDateCurr(new Date((long)now.getDt() * 1000L), lon).getTime();
+
+        now_time.setText(dateFormat.format(castDate(new Date(now.getDt() * 1000L + lon * 240000L))));
+        now_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather.getId(), sunrise, sunset, now_responsetime)));
         now_des.setText(now_weather.getDescription());
         now_temp.setText(String.valueOf(now.getMain().getTemp().intValue())+ "°");
 
@@ -332,8 +352,10 @@ public class MainActivity extends AppCompatActivity{
         now_3_icon.setTypeface(weatherFont);
         WeatherForecastElement now3 = lists.get(1);
         Weather now_weather3 = now3.getWeather().get(0);
-        now_3_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now3.getDt() * 1000L)));
-        now_3_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather3.getId(), sunrise, sunset,(long)now3.getDt() * 1000)));
+        long now3_responsetime = castDateCurr(new Date((long)now3.getDt() * 1000L), lon).getTime();
+
+        now_3_time.setText(dateFormat.format(castDate(new Date(now3.getDt() * 1000L + lon * 240000L))));
+        now_3_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather3.getId(), sunrise, sunset, now3_responsetime)));
         now_3_des.setText(now_weather3.getDescription());
         now_3_temp.setText(String.valueOf(now3.getMain().getTemp().intValue())+ "°");
 
@@ -345,8 +367,10 @@ public class MainActivity extends AppCompatActivity{
         now_6_icon.setTypeface(weatherFont);
         WeatherForecastElement now6 = lists.get(2);
         Weather now_weather6 = now6.getWeather().get(0);
-        now_6_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now6.getDt() * 1000L)));
-        now_6_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather6.getId(), sunrise, sunset,(long)now6.getDt() * 1000)));
+        long now6_responsetime = castDateCurr(new Date((long)now6.getDt() * 1000L), lon).getTime();
+
+        now_6_time.setText(dateFormat.format(castDate(new Date(now6.getDt() * 1000L + lon * 240000L))));
+        now_6_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather6.getId(), sunrise, sunset, now6_responsetime)));
         now_6_des.setText(now_weather6.getDescription());
         now_6_temp.setText(String.valueOf(now6.getMain().getTemp().intValue())+ "°");
 
@@ -358,8 +382,10 @@ public class MainActivity extends AppCompatActivity{
         now_9_icon.setTypeface(weatherFont);
         WeatherForecastElement now9 = lists.get(3);
         Weather now_weather9 = now9.getWeather().get(0);
-        now_9_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now9.getDt() * 1000L)));
-        now_9_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather9.getId(), sunrise, sunset,(long)now9.getDt() * 1000)));
+        long now9_responsetime = castDateCurr(new Date((long)now9.getDt() * 1000L), lon).getTime();
+
+        now_9_time.setText(dateFormat.format(castDate(new Date(now9.getDt() * 1000L + lon * 240000L))));
+        now_9_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather9.getId(), sunrise, sunset, now9_responsetime)));
         now_9_des.setText(now_weather9.getDescription());
         now_9_temp.setText(String.valueOf(now9.getMain().getTemp().intValue())+ "°");
 
@@ -371,8 +397,10 @@ public class MainActivity extends AppCompatActivity{
         now_12_icon.setTypeface(weatherFont);
         WeatherForecastElement now12 = lists.get(4);
         Weather now_weather12 = now12.getWeather().get(0);
-        now_12_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now12.getDt() * 1000L)));
-        now_12_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather12.getId(), sunrise, sunset,(long)now12.getDt() * 1000)));
+        long now12_responsetime = castDateCurr(new Date((long)now12.getDt() * 1000L), lon).getTime();
+
+        now_12_time.setText(dateFormat.format(castDate(new Date(now12.getDt() * 1000L + lon * 240000L))));
+        now_12_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather12.getId(), sunrise, sunset, now12_responsetime)));
         now_12_des.setText(now_weather12.getDescription());
         now_12_temp.setText(String.valueOf(now12.getMain().getTemp().intValue())+ "°");
 
@@ -384,8 +412,10 @@ public class MainActivity extends AppCompatActivity{
         now_15_icon.setTypeface(weatherFont);
         WeatherForecastElement now15 = lists.get(5);
         Weather now_weather15 = now15.getWeather().get(0);
-        now_15_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now15.getDt() * 1000L)));
-        now_15_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather15.getId(), sunrise, sunset,(long)now15.getDt() * 1000)));
+        long now15_responsetime = castDateCurr(new Date((long)now15.getDt() * 1000L), lon).getTime();
+
+        now_15_time.setText(dateFormat.format(castDate(new Date(now15.getDt() * 1000L + lon * 240000L))));
+        now_15_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather15.getId(), sunrise, sunset, now15_responsetime)));
         now_15_des.setText(now_weather15.getDescription());
         now_15_temp.setText(String.valueOf(now15.getMain().getTemp().intValue())+ "°");
 
@@ -397,10 +427,10 @@ public class MainActivity extends AppCompatActivity{
         now_18_icon.setTypeface(weatherFont);
         WeatherForecastElement now18 = lists.get(6);
         Weather now_weather18 = now18.getWeather().get(0);
-        //Date now_date = new Date(now18.getDt() * 1000L);
-        now_18_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now18.getDt() * 1000L)));
-        //now_18_time.setText(String.valueOf(now_date.getTimezoneOffset()));
-        now_18_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather18.getId(), sunrise, sunset,(long)now18.getDt() * 1000)));
+        long now18_responsetime = castDateCurr(new Date((long)now18.getDt() * 1000L), lon).getTime();
+
+        now_18_time.setText(dateFormat.format(castDate(new Date(now18.getDt() * 1000L + lon * 240000L))));
+        now_18_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather18.getId(), sunrise, sunset, now18_responsetime)));
         now_18_des.setText(now_weather18.getDescription());
         now_18_temp.setText(String.valueOf(now18.getMain().getTemp().intValue())+ "°");
 
@@ -412,8 +442,10 @@ public class MainActivity extends AppCompatActivity{
         now_21_icon.setTypeface(weatherFont);
         WeatherForecastElement now21 = lists.get(7);
         Weather now_weather21 = now21.getWeather().get(0);
-        now_21_time.setText(new SimpleDateFormat("h:mm a").format(new Date(now21.getDt() * 1000L)));
-        now_21_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather21.getId(), sunrise, sunset,(long)now21.getDt() * 1000)));
+        long now21_responsetime = castDateCurr(new Date((long)now21.getDt() * 1000L), lon).getTime();
+
+        now_21_time.setText(dateFormat.format(castDate(new Date(now21.getDt() * 1000L + lon * 240000L))));
+        now_21_icon.setText(Html.fromHtml(Function.setWeatherIcon(now_weather21.getId(), sunrise, sunset, now21_responsetime)));
         now_21_des.setText(now_weather21.getDescription());
         now_21_temp.setText(String.valueOf(now21.getMain().getTemp().intValue())+ "°");
 

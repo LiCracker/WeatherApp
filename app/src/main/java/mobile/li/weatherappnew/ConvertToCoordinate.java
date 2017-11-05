@@ -18,6 +18,7 @@ import java.net.URL;
  */
 
 public class ConvertToCoordinate{
+
     public interface AsyncResponse {
         void processFinish(String output1, String output2);
     }
@@ -60,6 +61,9 @@ public class ConvertToCoordinate{
 
                 json = new JSONObject(result);
                 in.close();
+                if (conn != null){
+                    conn.disconnect();
+                }
 
                 return json;
 

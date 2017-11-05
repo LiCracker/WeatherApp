@@ -6,6 +6,9 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
+
+import static mobile.li.weatherappnew.Function.castDateCurr;
 
 /**
  * Created by Li on 2017/11/2.
@@ -34,15 +37,21 @@ public class CovertToCoordinateService {
                 JSONObject object = asyncTask.execute(cityName, countryName).get();
 
                 JSONObject coor = object.getJSONObject("coord");
-                currentTime = new SimpleDateFormat("hh:mm a").format(new Date(object.getLong("dt") * 1000L));
+                //currentTime = new SimpleDateFormat("hh:mm a").format(new Date(object.getLong("dt") * 1000L));
 
                 JSONObject main = object.getJSONObject("main");
-                currentTemp = main.getString("temp");
+                String getTemp = main.getString("temp");
+                currentTemp = String.valueOf(Double.valueOf(getTemp).intValue()) + "°C";
 
                 String lat = coor.getString("lat");
                 String lon = coor.getString("lon");
                 latitude = Double.valueOf(lat);
                 longitude = Double.valueOf(lon);
+
+                SimpleDateFormat dateFormat =new SimpleDateFormat("hh:mm a");
+                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                currentTime = dateFormat.format(castDateCurr(new Date(System.currentTimeMillis()), longitude.intValue()));
+
                 Log.v("Information", "[CovertToCoordinateService] [Convert successful]:"
                         + " |City: " + cityName
                         + " |Country: " + countryName
