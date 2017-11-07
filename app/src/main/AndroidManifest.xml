@@ -13,6 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBqzm34vecqut1DEhRrV7mnhYYLuGIUj1A"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".CityListActivity" />
-        <activity android:name=".CityAdderActivity" />
         <activity android:name=".CityDeleteActivity"></activity>
     </application>
 

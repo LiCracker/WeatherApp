@@ -6,5 +6,7 @@ package mobile.li.weatherappnew.model;
 
 public class CityInfo {
     public String name;
-    public String code;
+    public String latLon;
+    public double lat;
+    public double lon;
 }

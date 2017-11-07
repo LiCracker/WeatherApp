@@ -12,7 +12,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -22,14 +28,13 @@ import java.util.List;
 import mobile.li.weatherappnew.model.CityInfo;
 import mobile.li.weatherappnew.util.ModelUtils;
 
-import static mobile.li.weatherappnew.CityAdderActivity.KEY_CITY;
 
 public class CityListActivity extends AppCompatActivity {
 
-    private static final int REQ_CODE_CITY_ADDER = 100;
     private static final int REQ_CODE_CITY_DELETE = 101;
     private static final String MODEL_CITY_INFO = "city_info";
     public static final String KEY_LAT_LON = "city_lat_lon";
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
     private List<CityInfo> cities = new ArrayList<>();
@@ -47,24 +52,35 @@ public class CityListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK){
             switch (requestCode) {
-                case REQ_CODE_CITY_ADDER:
-                    List<String> addInfo = Arrays.asList(data.getStringExtra(KEY_CITY).split(","));
+                case PLACE_AUTOCOMPLETE_REQUEST_CODE:
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    String addr = place.getAddress().toString();
+                    LatLng lat = place.getLatLng();
+                    double l1 = lat.latitude;
+                    double l2 = lat.longitude;
+                    String sLatLon = String.valueOf(l1) + "," + String.valueOf(l2);
+
+                    List<String> addInfo = Arrays.asList(addr.split(","));
 
                     CityInfo newCity = new CityInfo();
                     newCity.name = addInfo.get(0).trim();
-                    newCity.code = addInfo.get(1).trim();
+                    newCity.latLon = sLatLon;
+                    newCity.lat = l1;
+                    newCity.lon = l2;
 
                     if(newCity != null){
-                        deleteCity(newCity.name, newCity.code);
+                        deleteCity(newCity.lat, newCity.lon);
                     }
                     cities.add(newCity);
                     ModelUtils.save(this, MODEL_CITY_INFO, cities);
                     setupCityUI();
                     break;
                 case REQ_CODE_CITY_DELETE:
-                    String deleteCityName = data.getStringExtra(CityDeleteActivity.DELETE_CITY_NAME);
-                    String deleteCityCode = data.getStringExtra(CityDeleteActivity.DELETE_CITY_CODE);
-                    deleteCity(deleteCityName, deleteCityCode);
+                    String deleteCityLat = data.getStringExtra(CityDeleteActivity.DELETE_CITY_LAT);
+                    String deleteCityLon = data.getStringExtra(CityDeleteActivity.DELETE_CITY_LON);
+                    double deleteLat = Double.parseDouble(deleteCityLat);
+                    double deleteLon = Double.parseDouble(deleteCityLon);
+                    deleteCity(deleteLat, deleteLon);
                     ModelUtils.save(this, MODEL_CITY_INFO, cities);
                     setupCityUI();
                     break;
@@ -80,8 +96,14 @@ public class CityListActivity extends AppCompatActivity {
         (findViewById(R.id.city_list_addButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CityListActivity.this, CityAdderActivity.class);
-                startActivityForResult(intent, REQ_CODE_CITY_ADDER);
+                try{
+                    Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN).build(CityListActivity.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                }catch (GooglePlayServicesRepairableException e){
+
+                }catch(GooglePlayServicesNotAvailableException e){
+
+                }
             }
         });
 
@@ -123,14 +145,14 @@ public class CityListActivity extends AppCompatActivity {
         String temp = s.getCurrentTemp();
 
 
-        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "," + c.code + "   " + temp + "°C");
+        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "   " + temp);
 
         ImageButton cityDeleteBtn = (ImageButton) cityView.findViewById(R.id.city_item_delete);
         cityDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CityListActivity.this, CityDeleteActivity.class);
-                String s = c.name + "," + c.code;
+                String s = c.latLon;
                 intent.putExtra(CityDeleteActivity.DELETE_CITY, s);
                 startActivityForResult(intent, REQ_CODE_CITY_DELETE);
             }
@@ -139,12 +161,7 @@ public class CityListActivity extends AppCompatActivity {
         (cityView.findViewById(R.id.city_item)).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                CovertToCoordinateService s1 = new CovertToCoordinateService(c.name, c.code);
-                s1.CovertToCoordinateExecuate();
-                Double lat = s1.getLatitude();
-                Double lon = s1.getLongitude();
-
-                String result = "0" + "," + String.valueOf(lat) + "," + String.valueOf(lon);
+                String result = "0" + "," + c.latLon;
                 Intent intent = new Intent(CityListActivity.this, MainActivity.class);
                 intent.putExtra(KEY_LAT_LON, result);
                 startActivity(intent);
@@ -160,10 +177,10 @@ public class CityListActivity extends AppCompatActivity {
         cities = saveCityInfo == null ? new ArrayList<CityInfo>() : saveCityInfo;
     }
 
-    private void deleteCity(String name, String code){
+    private void deleteCity(double lat, double lon){
         for (int i = 0; i < cities.size(); ++i){
             CityInfo c = cities.get(i);
-            if(TextUtils.equals(c.name, name) && TextUtils.equals(c.code, code)){
+            if(c.lat == lat && c.lon == lon){
                 cities.remove(i);
                 break;
             }

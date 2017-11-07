@@ -13,8 +13,8 @@ import java.util.List;
 public class CityDeleteActivity extends AppCompatActivity {
 
     public static final String DELETE_CITY = "delete_city";
-    public static final String DELETE_CITY_NAME = "delete_city_name";
-    public static final String DELETE_CITY_CODE = "delete_city_code";
+    public static final String DELETE_CITY_LAT = "delete_city_lat";
+    public static final String DELETE_CITY_LON = "delete_city_lon";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +26,12 @@ public class CityDeleteActivity extends AppCompatActivity {
             public void onClick(View view){
                 List<String> deleteInfo = Arrays.asList(getIntent().getStringExtra(DELETE_CITY).split(","));
 
-                String name = deleteInfo.get(0).trim();
-                String code = deleteInfo.get(1).trim();
+                String lat = deleteInfo.get(0).trim();
+                String lon = deleteInfo.get(1).trim();
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra(DELETE_CITY_NAME, name);
-                resultIntent.putExtra(DELETE_CITY_CODE, code);
+                resultIntent.putExtra(DELETE_CITY_LAT, lat);
+                resultIntent.putExtra(DELETE_CITY_LON, lon);
                 setResult(RESULT_OK, resultIntent);
                 finish();
 
