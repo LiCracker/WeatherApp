@@ -105,7 +105,7 @@ public class getWeatherDataService {
         if(currentTime != null){
             return currentTime;
         }else{
-            Log.e("ERROR: ", "[CovertToCoordinateService]: CurrentTimePOST");
+            Log.e("ERROR: ", "[getWeatherDataService]: CurrentTimePOST");
         }
         return null;
     }
@@ -114,7 +114,7 @@ public class getWeatherDataService {
         if(currentTemp != null){
             return currentTemp;
         }else{
-            Log.e("ERROR: ", "[CovertToCoordinateService]: CurrentTempPOST");
+            Log.e("ERROR: ", "[getWeatherDataService]: CurrentTempPOST");
         }
         return null;
     }

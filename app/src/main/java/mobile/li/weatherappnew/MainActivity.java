@@ -15,8 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +42,10 @@ import az.openweatherapi.model.gson.five_day.WeatherForecastElement;
 import az.openweatherapi.utils.OWSupportedUnits;
 import mobile.li.weatherappnew.model.Coor;
 
+import static mobile.li.weatherappnew.Function.CelsiusToFahrenheit;
+import static mobile.li.weatherappnew.Function.CelsiusToFahrenheitDays;
+import static mobile.li.weatherappnew.Function.FahrenheitToCelsius;
+import static mobile.li.weatherappnew.Function.FahrenheitToCelsiusDays;
 import static mobile.li.weatherappnew.Function.castDate;
 import static mobile.li.weatherappnew.Function.castDateCurr;
 
@@ -75,6 +81,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        ToggleButton toggle = (ToggleButton)findViewById(R.id.toggleButton);
+
         intentLocation = getIntentLocation();
         userLocation = getUserLocation();
 
@@ -93,6 +101,60 @@ public class MainActivity extends AppCompatActivity{
                 loadWeather(null);
             }
         }
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentTemperatureField = (TextView)findViewById(R.id.current_temperature_field);
+                TextView now_temp = (TextView)findViewById(R.id.now_temp);
+                TextView now_3_temp = (TextView)findViewById(R.id.now_3_temp);
+                TextView now_6_temp = (TextView)findViewById(R.id.now_6_temp);
+                TextView now_9_temp = (TextView)findViewById(R.id.now_9_temp);
+                TextView now_12_temp = (TextView)findViewById(R.id.now_12_temp);
+                TextView now_15_temp = (TextView)findViewById(R.id.now_15_temp);
+                TextView now_18_temp = (TextView)findViewById(R.id.now_18_temp);
+                TextView now_21_temp = (TextView)findViewById(R.id.now_21_temp);
+                TextView day_1_temp = (TextView)findViewById(R.id.day_1_temp);
+                TextView day_2_temp = (TextView)findViewById(R.id.day_2_temp);
+                TextView day_3_temp = (TextView)findViewById(R.id.day_3_temp);
+                TextView day_4_temp = (TextView)findViewById(R.id.day_4_temp);
+                TextView day_5_temp = (TextView)findViewById(R.id.day_5_temp);
+
+                if (isChecked) {
+                    // The toggle is enabled - F
+                    currentTemperatureField.setText(FahrenheitToCelsius(currentTemperatureField.getText().toString()));
+                    now_temp.setText(FahrenheitToCelsius(now_temp.getText().toString()));
+                    now_3_temp.setText(FahrenheitToCelsius(now_3_temp.getText().toString()));
+                    now_6_temp.setText(FahrenheitToCelsius(now_6_temp.getText().toString()));
+                    now_9_temp.setText(FahrenheitToCelsius(now_9_temp.getText().toString()));
+                    now_12_temp.setText(FahrenheitToCelsius(now_12_temp.getText().toString()));
+                    now_15_temp.setText(FahrenheitToCelsius(now_15_temp.getText().toString()));
+                    now_18_temp.setText(FahrenheitToCelsius(now_18_temp.getText().toString()));
+                    now_21_temp.setText(FahrenheitToCelsius(now_21_temp.getText().toString()));
+                    day_1_temp.setText(FahrenheitToCelsiusDays(day_1_temp.getText().toString()));
+                    day_2_temp.setText(FahrenheitToCelsiusDays(day_2_temp.getText().toString()));
+                    day_3_temp.setText(FahrenheitToCelsiusDays(day_3_temp.getText().toString()));
+                    day_4_temp.setText(FahrenheitToCelsiusDays(day_4_temp.getText().toString()));
+                    day_5_temp.setText(FahrenheitToCelsiusDays(day_5_temp.getText().toString()));
+
+                } else {
+                    // The toggle is disabled - C
+                    currentTemperatureField.setText(CelsiusToFahrenheit(currentTemperatureField.getText().toString()));
+                    now_temp.setText(CelsiusToFahrenheit(now_temp.getText().toString()));
+                    now_3_temp.setText(CelsiusToFahrenheit(now_3_temp.getText().toString()));
+                    now_6_temp.setText(CelsiusToFahrenheit(now_6_temp.getText().toString()));
+                    now_9_temp.setText(CelsiusToFahrenheit(now_9_temp.getText().toString()));
+                    now_12_temp.setText(CelsiusToFahrenheit(now_12_temp.getText().toString()));
+                    now_15_temp.setText(CelsiusToFahrenheit(now_15_temp.getText().toString()));
+                    now_18_temp.setText(CelsiusToFahrenheit(now_18_temp.getText().toString()));
+                    now_21_temp.setText(CelsiusToFahrenheit(now_21_temp.getText().toString()));
+                    day_1_temp.setText(CelsiusToFahrenheitDays(day_1_temp.getText().toString()));
+                    day_2_temp.setText(CelsiusToFahrenheitDays(day_2_temp.getText().toString()));
+                    day_3_temp.setText(CelsiusToFahrenheitDays(day_3_temp.getText().toString()));
+                    day_4_temp.setText(CelsiusToFahrenheitDays(day_4_temp.getText().toString()));
+                    day_5_temp.setText(CelsiusToFahrenheitDays(day_5_temp.getText().toString()));
+                }
+            }
+        });
 
     }
 
@@ -562,12 +624,20 @@ public class MainActivity extends AppCompatActivity{
         TextView day_4_temp = (TextView)findViewById(R.id.day_4_temp);
         TextView day_4_time = (TextView)findViewById(R.id.day_4_time);
 
-        int day4 = DateQueue.pollFirst();
-        day_4_icon.setTypeface(weatherFont);
-        day_4_time.setText(DayDate.get(day4));
-        day_4_icon.setText(Html.fromHtml(Function.setWeatherIcon2(DayId.get(day4))));
-        day_4_des.setText(DayDes.get(day4));
-        day_4_temp.setText(String.valueOf(DayMax.get(day4)) + "/" + String.valueOf(DayMin.get(day4)) + "°C");
+        if(DayDes.size() > 3){
+            int day4 = DateQueue.pollFirst();
+            day_4_icon.setTypeface(weatherFont);
+            day_4_time.setText(DayDate.get(day4));
+            day_4_icon.setText(Html.fromHtml(Function.setWeatherIcon2(DayId.get(day4))));
+            day_4_des.setText(DayDes.get(day4));
+            day_4_temp.setText(String.valueOf(DayMax.get(day4)) + "/" + String.valueOf(DayMin.get(day4)) + "°C");
+        }else{
+            day_4_icon.setTypeface(weatherFont);
+            day_4_time.setText("");
+            day_4_icon.setText("");
+            day_4_des.setText("");
+            day_4_temp.setText("");
+        }
 
         TextView day_5_icon = (TextView)findViewById(R.id.day_5_icon);
         TextView day_5_des = (TextView)findViewById(R.id.day_5_des);

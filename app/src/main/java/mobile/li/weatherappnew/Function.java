@@ -127,6 +127,60 @@ public class Function {
         return result;
     }
 
+    public static String CelsiusToFahrenheit(String fahrenheit){
+        if(fahrenheit == null){
+            return null;
+        }else if(fahrenheit == ""){
+            return "";
+        }
+
+        Double degree = Double.valueOf(fahrenheit.split("°")[0]);
+        Double celsius = (5.0/9.0)*(degree - 32.0);
+        return celsius.intValue() + "°";
+    }
+
+    public static String FahrenheitToCelsius(String celsius){
+        if(celsius == null){
+            return null;
+        }else if(celsius == ""){
+            return "";
+        }
+
+        Double degree = Double.valueOf(celsius.split("°")[0]);
+        Double fahrenheit = (9.0/5.0)*degree + 32;
+        return fahrenheit.intValue() + "°";
+    }
+
+    public static String CelsiusToFahrenheitDays(String fahrenheit){
+        if(fahrenheit == null){
+            return null;
+        }else if(fahrenheit == ""){
+            return "";
+        }
+
+        String[] temp = fahrenheit.substring(0, fahrenheit.length() - 2).split("/");
+        Double highest = Double.valueOf(temp[0]);
+        Double lowest = Double.valueOf(temp[1]);
+        Double celsius_highest = (5.0/9.0)*(highest - 32.0);
+        Double celsius_lowest = (5.0/9.0)*(lowest - 32.0);
+        return celsius_highest.intValue() + "/" + celsius_lowest.intValue() + "°C";
+    }
+
+    public static String FahrenheitToCelsiusDays(String celsius){
+        if(celsius == null){
+            return null;
+        }else if(celsius == ""){
+            return "";
+        }
+
+        String[] temp = celsius.substring(0, celsius.length() - 2).split("/");
+        Double highest = Double.valueOf(temp[0]);
+        Double lowest = Double.valueOf(temp[1]);
+        Double fahrenheit_highest = (9.0/5.0) * highest + 32;
+        Double fahrenheit_lowest = (9.0/5.0) * lowest + 32;
+        return fahrenheit_highest.intValue() + "/" + fahrenheit_lowest.intValue() + "°F";
+    }
+
     public interface AsyncResponse {
 
         void processFinish(String output1, String output2, String output3, String output4, String output5, String output6, String output7, String output8);

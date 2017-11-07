@@ -28,6 +28,16 @@
         android:background="@null"
         android:src="@drawable/ic_list_white_48px" />
 
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:checked="false"
+        android:textOff="°C"
+        android:textOn="°F" />
+
     <TextView
         android:id="@+id/updated_field"
         android:layout_width="wrap_content"
@@ -47,7 +57,7 @@
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFFFF"
-        android:textSize="70sp"
+        android:textSize="60sp"
         tools:text="Desp" />
 
     <TextView
@@ -71,18 +81,12 @@
         android:textColor="#FFFFFF"
         tools:text="clear sky" />
 
-    <LinearLayout
-        android:id="@+id/linear_layout_hour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/current_temperature_field"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
         <LinearLayout
             android:id="@+id/linear_layout_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/current_temperature_field"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -447,15 +451,15 @@
                     android:textAlignment="center"
                     android:text="now_21_temp" />
             </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
     <LinearLayout
+        android:id="@+id/linear_layout_days"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/linear_layout_hour"
+        android:layout_below="@id/linear_layout_2"
         android:layout_marginTop="16dp">
 
         <LinearLayout
@@ -678,6 +682,7 @@
                 android:textAlignment="center"
                 android:text="day_5_wea" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
