@@ -9,4 +9,6 @@ public class CityInfo {
     public String latLon;
     public double lat;
     public double lon;
+    public String time;
+    public String temp;
 }

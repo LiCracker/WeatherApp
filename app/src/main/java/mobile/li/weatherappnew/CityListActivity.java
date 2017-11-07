@@ -43,6 +43,7 @@ public class CityListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        deleteData();
         loadData();
         setupUI();
 
@@ -54,22 +55,27 @@ public class CityListActivity extends AppCompatActivity {
             switch (requestCode) {
                 case PLACE_AUTOCOMPLETE_REQUEST_CODE:
                     Place place = PlaceAutocomplete.getPlace(this, data);
-                    String addr = place.getAddress().toString();
                     LatLng lat = place.getLatLng();
                     double l1 = lat.latitude;
                     double l2 = lat.longitude;
                     String sLatLon = String.valueOf(l1) + "," + String.valueOf(l2);
 
-                    List<String> addInfo = Arrays.asList(addr.split(","));
+                    getWeatherDataService s = new getWeatherDataService(String.valueOf(l1), String.valueOf(l2));
+                    String name = s.getCityName();
+                    String temp = s.getCurrentTemp();
+                    String time = s.getCurrentTime();
+
 
                     CityInfo newCity = new CityInfo();
-                    newCity.name = addInfo.get(0).trim();
+                    newCity.name = name;
                     newCity.latLon = sLatLon;
                     newCity.lat = l1;
                     newCity.lon = l2;
+                    newCity.time = time;
+                    newCity.temp = temp;
 
                     if(newCity != null){
-                        deleteCity(newCity.lat, newCity.lon);
+                        deleteCity(name);
                     }
                     cities.add(newCity);
                     ModelUtils.save(this, MODEL_CITY_INFO, cities);
@@ -78,9 +84,11 @@ public class CityListActivity extends AppCompatActivity {
                 case REQ_CODE_CITY_DELETE:
                     String deleteCityLat = data.getStringExtra(CityDeleteActivity.DELETE_CITY_LAT);
                     String deleteCityLon = data.getStringExtra(CityDeleteActivity.DELETE_CITY_LON);
-                    double deleteLat = Double.parseDouble(deleteCityLat);
-                    double deleteLon = Double.parseDouble(deleteCityLon);
-                    deleteCity(deleteLat, deleteLon);
+                    getWeatherDataService s2 = new getWeatherDataService(String.valueOf(deleteCityLat), String.valueOf(deleteCityLon));
+                    String s2Name = s2.getCityName();
+//                    double deleteLat = Double.parseDouble(deleteCityLat);
+//                    double deleteLon = Double.parseDouble(deleteCityLon);
+                    deleteCity(s2Name);
                     ModelUtils.save(this, MODEL_CITY_INFO, cities);
                     setupCityUI();
                     break;
@@ -140,12 +148,8 @@ public class CityListActivity extends AppCompatActivity {
 
 
     private void setupCity(View cityView, final CityInfo c){
-        CovertToCoordinateService s = new CovertToCoordinateService(c.name, c.code);
-        s.CovertToCoordinateExecuate();
-        String temp = s.getCurrentTemp();
 
-
-        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "   " + temp);
+        ((Button) cityView.findViewById(R.id.city_item)).setText(c.name + "   " + c.time + "   " + c.temp);
 
         ImageButton cityDeleteBtn = (ImageButton) cityView.findViewById(R.id.city_item_delete);
         cityDeleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -177,13 +181,17 @@ public class CityListActivity extends AppCompatActivity {
         cities = saveCityInfo == null ? new ArrayList<CityInfo>() : saveCityInfo;
     }
 
-    private void deleteCity(double lat, double lon){
+    private void deleteCity(String name){
         for (int i = 0; i < cities.size(); ++i){
             CityInfo c = cities.get(i);
-            if(c.lat == lat && c.lon == lon){
+            if(TextUtils.equals(c.name, name)){
                 cities.remove(i);
                 break;
             }
         }
     }
+
+//    private void deleteData(){
+//        ModelUtils.save(this, MODEL_CITY_INFO, new ArrayList<CityInfo> ());
+//    }
 }
