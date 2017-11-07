@@ -16,7 +16,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+
+import static android.content.ContentValues.TAG;
 
 public class Function {
     private static final String OPEN_WEATHER_MAP_URL =
@@ -30,11 +33,32 @@ public class Function {
         Date sunriseF = new Date(sunrise);
         Date sunsetF = new Date(sunset);
         Date rtimeF = new Date(rtime);
+        Log.i(TAG, "[setWeatherIcon]sunrise Hour: " + sunriseF.getHours()
+                + " sunset Hour: " + sunsetF.getHours()
+                + " Report Time Hour: " + rtimeF.getHours());
+
         if(actualId == 800){
             //long currentTime = new Date().getTime();
             long currentTime = rtime;
             //if(currentTime>=sunrise && currentTime<sunset) {
-            if(rtimeF.getHours() > sunriseF.getHours() && rtimeF.getHours() < sunsetF.getHours()){
+            HashSet<Integer> suntime = new HashSet<>();
+            int sunriseHours = sunriseF.getHours();
+            int sunsetHours = sunsetF.getHours();
+            int rtimeHours = rtimeF.getHours();
+            if(sunriseHours > sunsetHours){
+                for(int i = sunriseHours; i <= 23; i++){
+                    suntime.add(i);
+                }
+                for(int i = 0; i <= sunsetHours; i++){
+                    suntime.add(i);
+                }
+            }else{
+                for(int i = sunriseHours; i <= sunsetHours; i++){
+                    suntime.add(i);
+                }
+            }
+
+            if(suntime.contains(rtimeHours)){
                 icon = "&#xf00d;";
             } else {
                 icon = "&#xf02e;";
@@ -80,6 +104,27 @@ public class Function {
             }
         }
         return icon;
+    }
+
+    public static Date castDate(Date original_date){
+        Date result = new Date(original_date.getTime());
+        if(original_date.getMinutes() > 50){
+            result.setHours(result.getHours() + 1);
+            result.setMinutes(0);
+        }else{
+            result.setMinutes(0);
+        }
+
+        return result;
+    }
+
+    public static Date castDateCurr(Date original_date, int lon){
+        Date temp = castDate(new Date(original_date.getTime() + lon * 240000L));
+        Date result = new Date(original_date.getTime());
+        result.setHours(temp.getHours());
+//        Log.i(TAG, "[castDateCurr]original Hour: " + original_date.getHours()
+//                + " Cast Hour: " + result.getHours());
+        return result;
     }
 
     public interface AsyncResponse {
